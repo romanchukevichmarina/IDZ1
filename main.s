@@ -78,7 +78,7 @@ main:
 	mov	DWORD PTR -4[rbp], 0            # rbp[-4] = 0 -- зануление `int i`
 	jmp	.L5                             # переход к метке .L5
 .L6:
-	mov	eax, DWORD PTR -4[rbp]          # eax := rbp[-4]
+	mov	eax, DWORD PTR -4[rbp]          # eax := `int i`
 	lea	rdx, 0[0+rax*4]                 # rdx := rax * 4
 	lea	rax, B[rip]                     # rax := &rip[B]
 	mov	eax, DWORD PTR [rdx+rax]        # eax := *(rdx + rax)
