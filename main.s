@@ -25,9 +25,9 @@ main:
 	lea	rdi, .LC0[rip]              # rdi := &(строчка "&d")
 	mov	eax, 0                      # eax := 0
 	
-	call	__isoc99_scanf@PLT      # scanf("%d", &rbp[-16])
+	call	__isoc99_scanf@PLT      # scanf("%d", &rbp[-16]) -- ввод n
 	mov	DWORD PTR -12[rbp], 2147483647      # rbp[-12] = 2147483647 -- переменная min
-	mov	DWORD PTR -4[rbp], 0                # rbp[-4] = 0 -- счетчик цикла
+	mov	DWORD PTR -4[rbp], 0                # rbp[-4] = 0 -- счетчик цикла i
 	jmp	.L2                                 # переход к метке .L2
 .L4:
 	lea	rax, -20[rbp]               # rax := &(-20 на стеке)
@@ -36,61 +36,61 @@ main:
 	lea	rdi, .LC0[rip]              # rdi := &(строчка "&d")
 	mov	eax, 0                      # eax := 0
 	
-	call	__isoc99_scanf@PLT      # scanf("%d", &rbp[-20])
+	call	__isoc99_scanf@PLT      # scanf("%d", &rbp[-20]) -- ввод t
 	mov	eax, DWORD PTR -20[rbp]     # eax := `int t`
 	mov	edx, DWORD PTR -4[rbp]      # edx := `int i`
 	movsx	rdx, edx                # rdx := edx
 	lea	rcx, 0[0+rdx*4]             # / rcx := rdx * 4
 	lea	rdx, A[rip]                 # | rdx := &rip[A]
-	mov	DWORD PTR [rcx+rdx], eax    # | [rcx + rdx] := eax
-	mov	eax, DWORD PTR -20[rbp]     # \ eax := rbp[-20]
+	mov	DWORD PTR [rcx+rdx], eax    # | [rcx + rdx] := eax 
+	mov	eax, DWORD PTR -20[rbp]     # \ eax := rbp[-20] -- запись t в A[i]
 	mov	edx, DWORD PTR -4[rbp]      # edx := rbp[-4]
 	movsx	rdx, edx                # rdx := edx
 	lea	rcx, 0[0+rdx*4]             # / rcx := rdx * 4
 	lea	rdx, B[rip]                 # | rdx := &rip[B]
-	mov	DWORD PTR [rcx+rdx], eax    # | [rcx + rdx] := eax
-	mov	eax, DWORD PTR -20[rbp]     # \ eax := rbp[-20]
-	cmp	DWORD PTR -12[rbp], eax     # сравнить rbp[-12] и eax (это счетчик цикла и N)
+	mov	DWORD PTR [rcx+rdx], eax    # | [rcx + rdx] := eax 
+	mov	eax, DWORD PTR -20[rbp]     # \ eax := rbp[-20] -- запись t в B[i]
+	cmp	DWORD PTR -12[rbp], eax     # сравнить rbp[-12] и eax (min и t)
 	jle	.L3                         # если меньше или равно, то перейти к .L3
 	mov	eax, DWORD PTR -4[rbp]      # eax := rbp[-4]
-	mov	DWORD PTR -8[rbp], eax      # rbp[-8] := eax
+	mov	DWORD PTR -8[rbp], eax      # rbp[-8] := eax -- запись i в j
 	mov	eax, DWORD PTR -20[rbp]     # eax := rbp[-20]
-	mov	DWORD PTR -12[rbp], eax     # rbp[-12] := eax
+	mov	DWORD PTR -12[rbp], eax     # rbp[-12] := eax -- запись t в min
 .L3:
-	add	DWORD PTR -4[rbp], 1        # rbp[-4] += 1 (++i)
+	add	DWORD PTR -4[rbp], 1        # rbp[-4] += 1 -- ++i
 .L2:
-	mov	eax, DWORD PTR -16[rbp]         # eax := rbp[-16] (загрузка N из стека в регистр)
-	cmp	DWORD PTR -4[rbp], eax          # сравнить rbp[-4] и eax (это счетчик цикла и N)
+	mov	eax, DWORD PTR -16[rbp]         # eax := rbp[-16] -- загрузка n из стека в регистр
+	cmp	DWORD PTR -4[rbp], eax          # сравнить rbp[-4] и eax (это счетчик `i` цикла и n)
 	jl	.L4                             # если меньше, то перейти к .L3
-	mov	eax, DWORD PTR -8[rbp]          # eax := `int n`
-	lea	rdx, 0[0+rax*4]                 # / rdx := rax * 4
+	mov	eax, DWORD PTR -8[rbp]          # eax := rbp[-8] 
+	lea	rdx, 0[0+rax*4]                 # / rdx := rax * 4 
 	lea	rax, B[rip]                     # | rax := &rip[B]
 	mov	eax, DWORD PTR [rdx+rax]        # | eax := *(rdx + rax)
-	mov	DWORD PTR -20[rbp], eax         # \ rbp[-20] := eax
-	mov	eax, DWORD PTR B[rip]           # eax := &rip[B]
+	mov	DWORD PTR -20[rbp], eax         # \ rbp[-20] := eax -- запись B[j] в `int t`
+	mov	eax, DWORD PTR B[rip]           # eax := &rip[B] -- запись B[0] в B[j]
 	mov	edx, DWORD PTR -8[rbp]          # edx := rbp[-8]
 	movsx	rdx, edx                    # rdx := edx
 	lea	rcx, 0[0+rdx*4]                 # / rcx := rdx * 4
 	lea	rdx, B[rip]                     # | rdx := &rip[B]
 	mov	DWORD PTR [rcx+rdx], eax        # | [rcx + rdx] := eax
-	mov	eax, DWORD PTR -20[rbp]         # \ eax := rbp[-20]
+	mov	eax, DWORD PTR -20[rbp]         # \ eax := rbp[-20] -- запись `int t` в B[0]
 	mov	DWORD PTR B[rip], eax           # rip[B] := eax
-	mov	DWORD PTR -4[rbp], 0            # rbp[-4] = 0
+	mov	DWORD PTR -4[rbp], 0            # rbp[-4] = 0 -- зануление `int i`
 	jmp	.L5                             # переход к метке .L5
 .L6:
-	mov	eax, DWORD PTR -4[rbp]          # edx := rbp[-4]
+	mov	eax, DWORD PTR -4[rbp]          # eax := rbp[-4]
 	lea	rdx, 0[0+rax*4]                 # rdx := rax * 4
 	lea	rax, B[rip]                     # rax := &rip[B]
 	mov	eax, DWORD PTR [rdx+rax]        # eax := *(rdx + rax)
 	mov	esi, eax                        # Вместо esi записали eax (esi := eax)
-	lea	rdi, .LC1[rip]                  # rdi := &(строчка "&d")
+	lea	rdi, .LC1[rip]                  # rdi := &(строчка "&d ")
 	mov	eax, 0                          # eax := 0
-	call	printf@PLT                  # printf("%d ", &rip[B])
+	call	printf@PLT                  # printf("%d ", &rip[B]) -- вывод B[i] и " "
 	add	DWORD PTR -4[rbp], 1            # rbp[-4] += 1 (++j)
 .L5:
 	mov	eax, DWORD PTR -16[rbp]         # eax := `int n`
-	cmp	DWORD PTR -4[rbp], eax          # cmp `int j` eax
+	cmp	DWORD PTR -4[rbp], eax          # сравнить rbp[-4] и eax (i и n)
 	jl	.L6                             # если меньше, то перейти к .L6
-	mov	eax, 0                          # eax := 0
+	mov	eax, 0                          # eax := 0 -- зануление `int n`
 	leave           # / Выход из функции
-	ret             # \ Выход из функции
+	ret             # \
